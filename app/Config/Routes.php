@@ -7,3 +7,5 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('/board', 'Board::list');
+$routes->get('/boardWrite', 'Board::write');
+$routes->get('/boardView', 'Board::view');

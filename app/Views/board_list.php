@@ -8,11 +8,15 @@
         </tr>
     </thead>
     <tbody id="board_list">
+        <?php
+        foreach($list as $ls) {
+        ?>
         <tr>
             <th scope="row">1</th>
             <td>홍길동</td>
             <td>게시판의 글</td>
             <td>2022.10.26</td>
         </tr>
+        <?php } ?>
     </tbody>
 </table>

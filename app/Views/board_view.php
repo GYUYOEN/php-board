@@ -3,13 +3,13 @@
 </h3>
 
 <article class="blog-post">
-    <h2 class="blog-post-title">제목이 오는 곳</h2>
-    <p class="blog-post-meta">날짜 by <a href="#">글쓴이</a></p>
+    <h2 class="blog-post-title"><?php echo $view->subject; ?></h2>
+    <p class="blog-post-meta"><?php echo $view->regdate; ?>by<a href="#"><?php echo $view->userid; ?></a></p>
 
     <hr>
 
     <p>
-        내용이 오는 곳
+        <?php echo $view->content;?>
     </p>
 
 

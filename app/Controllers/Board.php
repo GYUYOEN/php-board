@@ -5,15 +5,14 @@ use App\Models\BoardModel;
 
 class Board extends BaseController
 {
+
     public function list()
     {
         // $db = db_connect();
         // $query = "select * from board order by bid desc";
         // $rs = $db->query($query);
         // $data['list'] = $rs->getResult();//결과값 저장
-        
         $boardModel = new BoardModel();
-        $boardModel->showError();
         $data['list'] = $boardModel->orderBy('bid', 'DESC')->findAll();
         return render('board_list', $data);//view에 리턴
     }
@@ -23,8 +22,16 @@ class Board extends BaseController
         return render('board_write');  
     }
 
-    public function view()
+    public function save()
     {
-        return render('board_view');  
+        $subject=$this->request->getVar('subject');
+        $content=$this->request->getVar('content');
+    }
+
+    public function view($bid = null)
+    {
+        $boardModel = new BoardModel();
+        $data['view'] = $boardModel->where('bid', $bid)->findAll();
+        return render('board_view', $data);  
     }
 }

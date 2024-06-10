@@ -19,11 +19,20 @@ class Board extends BaseController
 
     public function write()
     {
+        if(!isset($_SESSION['userid'])) {
+            echo "<script>alert('로그인하십시오.');location.href='/login'</script>";
+            exit;
+        }
         return render('board_write');  
     }
 
     public function save()
     {
+        if(!isset($_SESSION['userid'])) {
+            echo "<script>alert('로그인하십시오.');location.href='/login'</script>";
+            exit;
+        }
+        
         $boardModel = new BoardModel();
         $subject=$this->request->getVar('subject');
         $content=$this->request->getVar('content');

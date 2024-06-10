@@ -1,0 +1,1 @@
+[C:\Users\김규연\Documents\woori\php-board\app\Controllers\MemberController.php][loginok][25][20240610073650]SELECT * FROM user WHERE userid = 'rbdus' AND passwd = '1234'

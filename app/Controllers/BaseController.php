@@ -27,6 +27,7 @@ abstract class BaseController extends Controller
      * @var CLIRequest|IncomingRequest
      */
     protected $request;
+    protected $session;
 
     /**
      * An array of helpers to be loaded automatically upon
@@ -54,5 +55,6 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+        $this->session = \Config\Services::session();
     }
 }

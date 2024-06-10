@@ -24,14 +24,25 @@ class Board extends BaseController
 
     public function save()
     {
+        $boardModel = new BoardModel();
         $subject=$this->request->getVar('subject');
         $content=$this->request->getVar('content');
+
+        $data = [
+            'userid' => 'test',
+            'subject' => $subject,
+            'content' => $content
+        ];
+    
+        $boardModel->insert($data);
+
+        return $this->response->redirect(site_url('/board'));
     }
 
     public function view($bid = null)
     {
         $boardModel = new BoardModel();
-        $data['view'] = $boardModel->where('bid', $bid)->findAll();
+        $data['view'] = $boardModel->find($bid);
         return render('board_view', $data);  
     }
 }

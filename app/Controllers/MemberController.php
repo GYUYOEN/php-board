@@ -7,7 +7,7 @@ class MemberController extends BaseController
 {
     public function login()
     {
-        echo render('login');
+        return render('login');
     }
 
     public function logout()

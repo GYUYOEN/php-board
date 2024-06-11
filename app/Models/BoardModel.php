@@ -17,4 +17,19 @@ class BoardModel extends Model{
         ,'status'
         ,'parent_id'
     ];
+
+    public function get_board_list()
+    {
+        return $this->orderBy('bid', 'DESC')->findAll();
+    }
+
+    public function save_board($data)
+    {
+        return $this->insert($data);
+    }
+
+    public function get_board($bid)
+    {
+        return $this->find($bid);
+    }
 }

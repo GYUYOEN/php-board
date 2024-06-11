@@ -14,4 +14,10 @@ class UserModel extends Model{
         ,'username'
         ,'email'
     ];
+
+
+    public function authenticate($userid, $passwd)
+    {
+        return $this->where('userid', $userid)->where('passwd', $passwd)->first();
+    }
 }

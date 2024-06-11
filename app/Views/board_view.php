@@ -10,4 +10,13 @@
         <?php echo $view->content;?>
     </p>
     <hr>
+    <p style="text-align:right;">
+        <?php
+            if($_SESSION['userid']==$view->userid) {
+        ?>
+        <a href="/modify/<?php echo $view->bid;?>"><button type="button" class="btn btn-primary">수정</button></a>
+        <a href="/delete/<?php echo $view->bid;?>"><button type="button" class="btn btn-warning">삭제</button></a>
+        <?php }?>
+        <a href="/board"><button type="button" class="btn btn-primary">목록</button></a>
+    </p> 
 </article>

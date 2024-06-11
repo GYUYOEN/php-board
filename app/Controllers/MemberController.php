@@ -5,6 +5,13 @@ use App\Models\UserModel;
 
 class MemberController extends BaseController
 {
+    protected $userModel;
+
+    public function __construct()
+    {
+        $this->userModel = new UserModel();
+    }
+
     public function login()
     {
         return render('login');
@@ -18,11 +25,10 @@ class MemberController extends BaseController
     
     public function loginok()
     {
-        $userModel = new UserModel();
         $userid = $this->request->getVar('userid');
         $passwd = $this->request->getVar('passwd');
 
-        $user = $userModel->where('userid', $userid)->where('passwd', $passwd)->first();
+        $user = $this->userModel->authenticate($userid, $passwd);
         if($user){
             $ses_data = [
                 'userid' => $user->userid,

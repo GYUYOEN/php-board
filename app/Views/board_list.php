@@ -23,4 +23,12 @@
 
 <p style="text-align:right;">
     <a href="/boardWrite"><button type="button" class="btn btn-primary">등록</button></a>
+
+    <?php
+        if(isset($_SESSION['userid'])) {
+    ?>
+        <a href="/logout"><button type="button" class="btn btn-warning">로그아웃</button></a>
+    <?php } else { ?>
+            <a href="/login"><button type="button" class="btn btn-warning">로그인</button></a>
+    <?php } ?>
 </p>

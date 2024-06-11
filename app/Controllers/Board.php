@@ -34,8 +34,25 @@ class Board extends BaseController
             exit;
         }
         
+        $bid=$this->request->getVar('bid'); // bid 값이 있으면 수정이고 아니면 등록
         $subject=$this->request->getVar('subject');
         $content=$this->request->getVar('content');
+
+        if($bid) {
+            $rs = $this->boardModel->get_board($bid);
+            if($_SESSION['userid']==$rs->getRow()->userid) {
+                $data = [
+                    'subject' => $subject,
+                    'content' => $content
+                ];
+                $this->boardModel->modify_board($data, $bid);
+                return $this->response->redirect(site_url('/boardView/'.$bid));
+                exit;
+            } else {
+                echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다.');location.href='/login';</script>";
+                exit;
+            }
+        }
 
         $data = [
             'userid' => $_SESSION['userid'],
@@ -52,5 +69,29 @@ class Board extends BaseController
     {
         $data['view'] = $this->boardModel->get_board($bid);
         return render('board_view', $data);  
+    }
+
+    public function modify($bid=null)
+    {
+        $rs = $this->boardModel->get_board($bid);
+        if($_SESSION['userid']==$rs->getRow()->userid) {
+            $data['view']=$rs->getRow();
+            return render('board_write', $data);
+        } else {
+            echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";
+            exit;
+        }
+    }
+
+    public function delete($bid=null)
+    {
+        $rs = $this->boardModel->get_board($bid);
+        if($_SESSION['userid']==$rs->getRow()->userid) {
+            $this->boardModel->delete_board($bid);
+            return $this->response->redirect(site_url('/board'));
+        } else {
+            echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";
+            exit;
+        }
     }
 }

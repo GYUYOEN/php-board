@@ -32,4 +32,9 @@ class BoardModel extends Model{
     {
         return $this->find($bid);
     }
+
+    public function modify_board($data,$bid)
+    {
+        return $this->where('bid', $bid)->update($data);
+    }
 }

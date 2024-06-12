@@ -40,7 +40,7 @@ class Board extends BaseController
 
         if($bid) {
             $rs = $this->boardModel->get_board($bid);
-            if($_SESSION['userid']==$rs->getRow()->userid) {
+            if($_SESSION['userid']==$rs->userid) {
                 $data = [
                     'subject' => $subject,
                     'content' => $content
@@ -74,8 +74,8 @@ class Board extends BaseController
     public function modify($bid=null)
     {
         $rs = $this->boardModel->get_board($bid);
-        if($_SESSION['userid']==$rs->getRow()->userid) {
-            $data['view']=$rs->getRow();
+        if($_SESSION['userid']==$rs->userid) {
+            $data['view']=$rs;
             return render('board_write', $data);
         } else {
             echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";
@@ -86,7 +86,7 @@ class Board extends BaseController
     public function delete($bid=null)
     {
         $rs = $this->boardModel->get_board($bid);
-        if($_SESSION['userid']==$rs->getRow()->userid) {
+        if($_SESSION['userid']==$rs->userid) {
             $this->boardModel->delete_board($bid);
             return $this->response->redirect(site_url('/board'));
         } else {

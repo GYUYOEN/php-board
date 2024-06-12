@@ -35,6 +35,11 @@ class BoardModel extends Model{
 
     public function modify_board($data,$bid)
     {
-        return $this->where('bid', $bid)->update($data);
+        return $this->set($data)->where('bid', $bid)->update();
+    }
+
+    public function delete_board($bid) 
+    {
+        return $this->delete($bid); 
     }
 }

@@ -6,10 +6,12 @@ use App\Models\BoardModel;
 class Board extends BaseController
 {
     protected $boardModel;
+    protected $fileModel;
 
     public function __construct()
     {
         $this->boardModel = new BoardModel();
+        $this->fileModel = new FileModel();
     }
 
     public function list()
@@ -54,14 +56,29 @@ class Board extends BaseController
             }
         }
 
+        $file=$this->request->getFile('upfile');
+        if($file->getName()) {
+            $filename=$file->getName(); //기존 파일명을 저장할때 필요하다. 여기서는 사용하지 않는다.
+            $newName=$file->getRandomName(); //서버에 저장할때 파일명을 바꿔준다.
+            $filepath=$file->store('board/',$newName); //CI4의 store 함수를 이용해 저장한다.
+        }
+
         $data = [
             'userid' => $_SESSION['userid'],
             'subject' => $subject,
             'content' => $content
         ];
     
-        $this->boardModel->save_board($data);
-
+        $insert_id=$this->boardModel->save_board($data);
+        if($file->getName()) {
+            $data = [
+                'bid' => $insert_id,
+                'userid' => $_SESSION['userid'],
+                'filename' => $filepath,
+                'type' => 'board'
+            ];
+            $this->fileModel->save_file($data);
+        }
         return $this->response->redirect(site_url('/board'));
     }
 

@@ -12,6 +12,9 @@
         <label for="exampleFormControlTextarea1" class="form-label">내용</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" name="content" rows="3"><?php echo isset($view->content)?$view->content:'';?></textarea>
     </div>
+    <div class="mb-3">
+        <input type="file" name="upfile" id="upfile" class="form-control form-control-lg" aria-label="Large file input example">
+    </div>
     <br />
     <?php
         $btntitle=isset($view->bid)?"수정":"등록";

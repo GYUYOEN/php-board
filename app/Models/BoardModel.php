@@ -25,7 +25,7 @@ class BoardModel extends Model{
 
     public function save_board($data)
     {
-        return $this->insert($data);
+        return $this->insert($data) ? $this->insertID() : false;
     }
 
     public function get_board($bid)

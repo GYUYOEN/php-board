@@ -18,8 +18,13 @@ class FileModel extends Model{
         ,'type'
     ];
 
-    public function save_file()
+    public function save_file($data)
     {
+        return $this->insert($data);
+    }
 
+    public function get_file($bid)
+    {
+        return $this->find($bid);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\BoardModel;
+use App\Models\FileModel;
 
 class Board extends BaseController
 {
@@ -85,6 +86,7 @@ class Board extends BaseController
     public function view($bid = null)
     {
         $data['view'] = $this->boardModel->get_board($bid);
+        $data['file_view'] = $this->fileModel->get_file($bid);
         return render('board_view', $data);  
     }
 

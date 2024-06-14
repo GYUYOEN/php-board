@@ -9,6 +9,12 @@
     <p>
         <?php echo $view->content;?>
     </p>
+    <br>
+    <?php
+        if(isset($view->filename)) {
+    ?>
+    <img src="<?php echo base_url('/uploads/'.$view->filename);?>">
+    <?php }?>
     <hr>
     <p style="text-align:right;">
         <?php

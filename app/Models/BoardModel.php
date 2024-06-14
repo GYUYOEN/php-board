@@ -42,4 +42,13 @@ class BoardModel extends Model{
     {
         return $this->delete($bid); 
     }
+
+    public function get_board_with_file($bid) 
+    {
+        return $this->select('b.*,f.filename')
+                    ->from('board b')
+                    ->join('file_table f', 'b.bid=f.bid', 'left')
+                    ->where('f.type', 'board')
+                    ->where('b.bid', $bid);
+    }
 }

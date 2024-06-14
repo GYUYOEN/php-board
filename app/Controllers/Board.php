@@ -85,9 +85,16 @@ class Board extends BaseController
 
     public function view($bid = null)
     {
-        $data['view'] = $this->boardModel->get_board($bid);
-        $data['file_view'] = $this->fileModel->get_file($bid);
+        $db = db_connect();
+        $query = "SELECT b.*, f.filename 
+                    FROM board b
+                    LEFT JOIN file_table f ON b.bid = f.bid AND f.type = 'board'
+                    WHERE b.bid = ?";
+        $rs = $db->query($query, [$bid]);
+        $data['view'] = $rs->getRow();
         return render('board_view', $data);  
+        // $data['view'] = $this->boardModel->get_board_with_file($bid);
+        // return render('board_view', $data);  
     }
 
     public function modify($bid=null)
@@ -106,7 +113,13 @@ class Board extends BaseController
     {
         $rs = $this->boardModel->get_board($bid);
         if($_SESSION['userid']==$rs->userid) {
-            $this->boardModel->delete_board($bid);
+            $files = $this->fileModel->get_type_board_file($bid);
+            foreach ($files as $file) {
+                if(unlink('uploads/'.$file->filename)) {
+                    $this->fileModel->delete_file($bid);
+                    $this->boardModel->delete_board($bid);
+                }
+            }
             return $this->response->redirect(site_url('/board'));
         } else {
             echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";

@@ -27,4 +27,16 @@ class FileModel extends Model{
     {
         return $this->find($bid);
     }
+
+    public function get_type_board_file($bid)
+    {
+        return $this->where('type', 'board')
+                    ->where('bid', $bid)
+                    ->findAll();
+    }
+
+    public function delete_file($bid)
+    {
+        return $this->delete($bid);
+    }
 }

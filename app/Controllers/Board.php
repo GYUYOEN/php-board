@@ -114,12 +114,10 @@ class Board extends BaseController
         $rs = $this->boardModel->get_board($bid);
         if($_SESSION['userid']==$rs->userid) {
             $files = $this->fileModel->get_type_board_file($bid);
-            foreach ($files as $file) {
-                if(unlink('uploads/'.$file->filename)) {
-                    $this->fileModel->delete_file($bid);
-                    $this->boardModel->delete_board($bid);
-                }
+            if(!empty($files)) {
+                $this->fileModel->delete_file($bid);
             }
+            $this->boardModel->delete_board($bid);
             return $this->response->redirect(site_url('/board'));
         } else {
             echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";

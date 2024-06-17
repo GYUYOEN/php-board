@@ -37,6 +37,8 @@ class FileModel extends Model{
 
     public function delete_file($bid)
     {
-        return $this->delete($bid);
+        return $this->where('type', 'board')
+                    ->where('bid', $bid)
+                    ->delete();
     }
 }

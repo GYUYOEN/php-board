@@ -13,7 +13,7 @@
         <textarea class="form-control" id="exampleFormControlTextarea1" name="content" rows="3"><?php echo isset($view->content)?$view->content:'';?></textarea>
     </div>
     <div class="mb-3">
-        <input type="file" name="upfile" id="upfile" class="form-control form-control-lg" aria-label="Large file input example">
+        <input type="file" multiple name="upfile[]" id="upfile" class="form-control form-control-lg" aria-label="Large file input example">
     </div>
     <br />
     <?php

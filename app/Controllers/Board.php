@@ -57,11 +57,14 @@ class Board extends BaseController
             }
         }
 
-        $file=$this->request->getFile('upfile');
-        if($file->getName()) {
-            $filename=$file->getName(); //기존 파일명을 저장할때 필요하다. 여기서는 사용하지 않는다.
-            $newName=$file->getRandomName(); //서버에 저장할때 파일명을 바꿔준다.
-            $filepath=$file->store('board/',$newName); //CI4의 store 함수를 이용해 저장한다.
+        $files=$this->request->getFileMultiple('upfile');
+        $filepath=array();
+        foreach($files as $file) {
+            if($file->getName()) { // 파일 정보가 있으면 저장
+                $filename=$file->getName(); //기존 파일명을 저장할때 필요하다. 여기서는 사용하지 않는다.
+                $newName=$file->getRandomName(); //서버에 저장할때 파일명을 바꿔준다.
+                $filepath[]=$file->store('board/',$newName); //CI4의 store 함수를 이용해 저장한다. 저장한 파일의 경로와 파일명을 리턴, 배열로 저장한다.
+            }
         }
 
         $data = [
@@ -71,30 +74,25 @@ class Board extends BaseController
         ];
     
         $insert_id=$this->boardModel->save_board($data);
-        if($file->getName()) {
-            $data = [
-                'bid' => $insert_id,
-                'userid' => $_SESSION['userid'],
-                'filename' => $filepath,
-                'type' => 'board'
-            ];
-            $this->fileModel->save_file($data);
+        foreach($filepath as $fp) { // 배열로 저장한 파일 저장 정보를 디비에 입력한다.
+            if(isset($fp)) {
+                $data = [
+                    'bid' => $insert_id,
+                    'userid' => $_SESSION['userid'],
+                    'filename' => $fp,
+                    'type' => 'board'
+                ];
+                $this->fileModel->save_file($data);
+            }
         }
-        return $this->response->redirect(site_url('/board'));
+        return $this->response->redirect(site_url('/boardView/'.$insert_id));
     }
 
     public function view($bid = null)
     {
         $db = db_connect();
-        $query = "SELECT b.*, f.filename 
-                    FROM board b
-                    LEFT JOIN file_table f ON b.bid = f.bid AND f.type = 'board'
-                    WHERE b.bid = ?";
-        $rs = $db->query($query, [$bid]);
-        $data['view'] = $rs->getRow();
+        $data['view'] = $this->boardModel->get_board_with_file($bid);
         return render('board_view', $data);  
-        // $data['view'] = $this->boardModel->get_board_with_file($bid);
-        // return render('board_view', $data);  
     }
 
     public function modify($bid=null)

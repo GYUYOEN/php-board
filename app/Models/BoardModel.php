@@ -45,10 +45,11 @@ class BoardModel extends Model{
 
     public function get_board_with_file($bid) 
     {
-        return $this->select('b.*,f.filename')
-                    ->from('board b')
-                    ->join('file_table f', 'b.bid=f.bid', 'left')
-                    ->where('f.type', 'board')
-                    ->where('b.bid', $bid);
+        $builder = $this->db->table('board b');
+        $builder->select('b.*, GROUP_CONCAT(f.filename) as fs');
+        $builder->join('file_table f', 'f.type = "board" AND f.bid = b.bid', 'left');
+        $builder->where('b.bid', $bid);
+        $query = $builder->get();
+        return $query->getRow();
     }
 }

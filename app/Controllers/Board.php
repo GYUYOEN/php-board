@@ -85,6 +85,15 @@ class Board extends BaseController
                 $this->fileModel->save_file($data);
             }
         }
+
+        if(isset($file_table_id)) {
+            $fti=explode(',', $file_table_id);
+            foreach($fti as $fi) {
+                if(isset($fi)) {
+                    $this->boardModel->update_file($insert_id, $fi);
+                }
+            }
+        }
         return $this->response->redirect(site_url('/boardView/'.$insert_id));
     }
 
@@ -121,5 +130,40 @@ class Board extends BaseController
             echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";
             exit;
         }
+    }
+
+    public function save_image()
+    {
+        $file = $this->request->getFile('savefile');
+        if($file->getName()) {
+            $filename=$file->getName();
+            $newName=$file->getRandomName();
+            $filepath=$file->store('board/', $newName);
+        }
+
+        if(isset($filepath)) {
+            $data = [
+                'userid' => $_SESSION['userid'],
+                'filename' => $filepath,
+                'type' => 'board'
+            ];
+            $insert_id = $this->fileModel->insert($data);
+        }
+
+        $return_data = array("result"=>"success", "fid"=>$insert_id, "savename"=>$filepath);
+        return json_encode($return_data);
+    }
+
+    public function file_delete()
+    {
+        $fid=$this->request->getVar('fid');
+        $rs = $this->fileModel->get_file($fid);
+        if(unlink('uploads/'.$rs->filename))
+        {
+            $this->fileModel->delete_file($fid);
+        }
+
+        $return_data = array("result"=>"ok");
+        return json_encode($return_data);
     }
 }

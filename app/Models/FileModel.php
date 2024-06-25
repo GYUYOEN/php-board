@@ -20,12 +20,12 @@ class FileModel extends Model{
 
     public function save_file($data)
     {
-        return $this->insert($data);
+        return $this->insert($data) ? $this->insertID() : false;
     }
 
-    public function get_file($bid)
+    public function get_file($fid)
     {
-        return $this->find($bid);
+        return $this->find($fid);
     }
 
     public function get_type_board_file($bid)
@@ -35,10 +35,17 @@ class FileModel extends Model{
                     ->findAll();
     }
 
-    public function delete_file($bid)
+    public function delete_file($fid)
     {
         return $this->where('type', 'board')
-                    ->where('bid', $bid)
+                    ->where('bid', $fid)
                     ->delete();
+    }
+
+    public function update_file($insert_id, $fi)
+    {
+        return $this->set('bid', $insert_id)
+                    ->where('fid', $fi)
+                    ->update('file_table');
     }
 }

@@ -1,6 +1,14 @@
+<?php
+    $file_table_id=0;
+    if(isset($fs)) {
+        foreach($fs as $ff) {
+            $file_table_id.=",".$ff->fid;
+        }
+    }
+?>
 <form method="post" action="<?= site_url('/writeSave') ?>" enctype="multipart/form-data">
     <input type="hidden" name="bid" value="<?php echo isset($view->bid)?$view->bid:0;?>">
-    <input type="hidden" name="file_table_id" id="file_table_id" value="0">
+    <input type="hidden" name="file_table_id" id="file_table_id" value="<?php echo $file_table_id ?>">
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">이름</label>
         <input type="text" name="username" class="form-control" id="exampleFormControlInput1" placeholder="이름을 입력하세요." value="<?php echo $_SESSION['username']?>">
@@ -17,7 +25,25 @@
         <input type="file" multiple name="upfile[]" id="upfile" class="form-control form-control-lg" aria-label="Large file input example">
     </div>
     <br />
-    <div class="row row-cols-1 row-cols-md-6 g-4" id="imageArea"></div>
+    <div class="row row-cols-1 row-cols-md-6 g-4" id="imageArea">
+    <?php
+        if(isset($fs)) {
+            foreach($fs as $f) {
+    ?>
+         <div class='col' id='f_<?php echo $f->fid;?>'>
+            <div class='card h-100'>
+                <img src='/uploads/<?php echo $f->filename;?>' class='card-img-top'>
+                <div class='card-body'>
+                    <button type='button' class='btn btn-warning' onclick='file_del(<?php echo $f->fid;?>)'>삭제</button>
+                </div>
+            </div>
+        </div>
+    <?php
+            }
+        }
+    ?>
+    </div>
+    <br />
     <?php
         $btntitle=isset($view->bid)?"수정":"등록";
     ?>
@@ -26,9 +52,19 @@
 
 <script>
     $("#upfile").change(function(){
-        var files=$('#upfile').prop('files');
+        var file_table_id = $("#file_table_id").val();
+        var farr = file_table_id.split(',');
+        var files = $('#upfile').prop('files');
+        var maxCnt = 0;
         for(var i = 0; i <files.length; i++) {
-            attachFile(files[i]);
+            maxCnt = parseInt(farr.length)+i;
+            if(maxCnt>5) {
+                alert('첨부 이미지는 최대 5개까지 등록 가능합니다.');
+                $('#upfile').val('');
+                return false;
+            } else {
+                attachFile(files[i]);
+            }
         }
 
         $('#upfile').val('');
@@ -60,7 +96,8 @@
         }
 
         var data = {
-            fid: fid
+            fid: fid,
+            file_table_id: $("#file_table_id").val()
         };
 
         $.ajax({
@@ -71,6 +108,7 @@
             dataType: 'json',
             error: function() {},
             success: function(return_data) {
+                $("#file_table_id").val(return_data.file_table_id);
                 $("#f_"+fid).hide();
             }
         })

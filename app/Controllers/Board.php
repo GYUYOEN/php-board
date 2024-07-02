@@ -40,6 +40,7 @@ class Board extends BaseController
         $bid=$this->request->getVar('bid'); // bid 값이 있으면 수정이고 아니면 등록
         $subject=$this->request->getVar('subject');
         $content=$this->request->getVar('content');
+        $file_table_id=$this->request->getVar('file_table_id');
 
         if($bid) {
             $rs = $this->boardModel->get_board($bid);
@@ -49,6 +50,14 @@ class Board extends BaseController
                     'content' => $content
                 ];
                 $this->boardModel->modify_board($data, $bid);
+                if(isset($file_table_id)) {
+                    $fti = explode(',', $file_table_id);
+                    foreach($fti as $fi) {
+                        if(isset($fi)) {
+                            $this->fileModel->update_file($bid, $fi);
+                        }
+                    }
+                }
                 return $this->response->redirect(site_url('/boardView/'.$bid));
                 exit;
             } else {
@@ -74,23 +83,12 @@ class Board extends BaseController
         ];
     
         $insert_id=$this->boardModel->save_board($data);
-        foreach($filepath as $fp) { // 배열로 저장한 파일 저장 정보를 디비에 입력한다.
-            if(isset($fp)) {
-                $data = [
-                    'bid' => $insert_id,
-                    'userid' => $_SESSION['userid'],
-                    'filename' => $fp,
-                    'type' => 'board'
-                ];
-                $this->fileModel->save_file($data);
-            }
-        }
 
         if(isset($file_table_id)) {
             $fti=explode(',', $file_table_id);
             foreach($fti as $fi) {
                 if(isset($fi)) {
-                    $this->boardModel->update_file($insert_id, $fi);
+                    $this->fileModel->update_file($insert_id, $fi);
                 }
             }
         }
@@ -99,7 +97,6 @@ class Board extends BaseController
 
     public function view($bid = null)
     {
-        $db = db_connect();
         $data['view'] = $this->boardModel->get_board_with_file($bid);
         return render('board_view', $data);  
     }
@@ -109,6 +106,8 @@ class Board extends BaseController
         $rs = $this->boardModel->get_board($bid);
         if($_SESSION['userid']==$rs->userid) {
             $data['view']=$rs;
+            $file_rs = $this->fileModel->get_file_by_bid($bid);
+            $data['fs']=$file_rs;
             return render('board_write', $data);
         } else {
             echo "<script>alert('본인이 작성한 글만 수정할 수 있습니다');location.href='/login';</script>";
@@ -157,13 +156,15 @@ class Board extends BaseController
     public function file_delete()
     {
         $fid=$this->request->getVar('fid');
+        $file_table_id=$this->request->getVar('file_table_id');
         $rs = $this->fileModel->get_file($fid);
         if(unlink('uploads/'.$rs->filename))
         {
             $this->fileModel->delete_file($fid);
+            $file_table_id=str_replace(",", $fid,'',$file_table_id);
         }
 
-        $return_data = array("result"=>"ok");
+        $return_data = array("result"=>"ok", "file_table_id"=>$file_table_id);
         return json_encode($return_data);
     }
 }

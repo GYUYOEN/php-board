@@ -16,7 +16,7 @@
             foreach($vfs as $img) {
                 if(isset($img)){
     ?>
-    <img src="<?php echo base_url('/uploads/'.$img);?>">
+                <img src="<?php echo base_url('/uploads/'.$img);?>">
     <?php }}} ?>
     <hr>
     <p style="text-align:right;">

@@ -3,16 +3,19 @@
 namespace App\Controllers;
 use App\Models\BoardModel;
 use App\Models\FileModel;
+use App\Models\MemoModel;
 
 class Board extends BaseController
 {
     protected $boardModel;
     protected $fileModel;
+    protected $memoModel;
 
     public function __construct()
     {
         $this->boardModel = new BoardModel();
         $this->fileModel = new FileModel();
+        $this->memoModel = new MemoModel();
     }
 
     public function list()
@@ -98,6 +101,9 @@ class Board extends BaseController
     public function view($bid = null)
     {
         $data['view'] = $this->boardModel->get_board_with_file($bid);
+
+        $data['memoArray'] = $this->memoModel->memo_list_with_file($bid);
+
         return render('board_view', $data);  
     }
 

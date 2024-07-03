@@ -14,8 +14,8 @@ class FileModel extends Model{
         ,'filename'
         ,'regdate'
         ,'status'
-        ,'memoid'
         ,'type'
+        ,'mid'
     ];
 
     public function save_file($data)
@@ -54,5 +54,67 @@ class FileModel extends Model{
         return $this->where('bid', $bid)
                     ->where('type', 'board')
                     ->findAll();
+    }
+
+    public function update_memo_file($bid, $insertid, $file_table_id)
+    {
+        return $this->set('bid', $bid)
+                    ->set('mid', $insertid)
+                    ->where('fid', $file_table_id)
+                    ->update();
+    }
+
+    public function select_memo_file($file_table_id)
+    {
+        return $this->where('status', 1)
+                    ->where('fid', $file_table_id)
+                    ->first();
+    }
+
+    public function insert_memo_file($userid, $filepath)
+    {
+        $data = [
+            "userid"=>$userid,
+            "filename"=>$filepath,
+            "type"=>'memo'
+        ];
+        return $this->insert($data) ? $this->insertID() : false;
+    }
+
+    public function get_memo_file($fid)
+    {
+        return $this->where('type', 'memo')
+                    ->where('fid', $fid)
+                    ->first();
+    }
+
+    public function delete_memo_file($fid)
+    {
+        return $this->where('type', 'memo')
+                    ->where('fid', $fid)
+                    ->delete();
+    }
+
+    public function get_memo_file_by_bid_mid($bid, $mid)
+    {
+        return $this->where('type', 'memo')
+                    ->where('bid', $bid)
+                    ->where('mid', $mid)
+                    ->first();
+    }
+
+    public function upldate_memo_file_by_bid_mid($bid, $mid, $modify_file_table_id)
+    {
+        return $this->set('bid', $bid)
+                    ->set('mid', $mid)
+                    ->where('fid', $modify_file_table_id)
+                    ->update();
+    }
+
+    public function get_memo_file_by_mid($mid)
+    {
+        return $this->where('type', 'memo')
+                    ->where('mid', $mid)
+                    ->first();
     }
 }

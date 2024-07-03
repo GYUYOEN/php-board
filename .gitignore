@@ -128,3 +128,4 @@ nb-configuration.xml
 app/Config/Database.php
 
 public/uploads/board
+public/uploads/memo

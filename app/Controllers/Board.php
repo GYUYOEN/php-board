@@ -161,7 +161,7 @@ class Board extends BaseController
         if(unlink('uploads/'.$rs->filename))
         {
             $this->fileModel->delete_file($fid);
-            $file_table_id=str_replace(",", $fid,'',$file_table_id);
+            $file_table_id = str_replace($fid.",","",$file_table_id);
         }
 
         $return_data = array("result"=>"ok", "file_table_id"=>$file_table_id);

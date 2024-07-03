@@ -35,10 +35,10 @@ class FileModel extends Model{
                     ->findAll();
     }
 
-    public function delete_file($bid)
+    public function delete_file($fid)
     {
         return $this->where('type', 'board')
-                    ->where('bid', $bid)
+                    ->where('fid', $fid)
                     ->delete();
     }
 
